@@ -29,6 +29,8 @@
 
 #include <boost/asio/post.hpp>
 
+#include <boost/algorithm/string.hpp>
+
 #include <nutclient.h>
 
 #include <ou/mqtt/mqtt.hpp>
@@ -177,6 +179,7 @@ void Loop::Poll( bool bAll, bool bEnumerate ) {
       }
 
       std::string sMessage;
+      std::string sTmp;
       bool bComma( false );
       setName_t setVariable;
       if ( bAll ) setVariable = setVariable_RO;
@@ -199,7 +202,9 @@ void Loop::Poll( bool bAll, bool bEnumerate ) {
                 sMessage += ',';
               }
               else bComma = true;
-              sMessage += '"' + sName + '"' + ':';
+              sTmp = '"' + sName + '"' + ':';
+              boost::replace_all(sTmp, ".", "_");
+              sMessage += sTmp;
 
               bool bNumeric( true );
               setName_t::const_iterator iterNumeric = m_choices.nut.setNumeric.find( sName );
